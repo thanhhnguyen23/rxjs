@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Subject } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
@@ -8,21 +9,21 @@ import { Observable } from 'rxjs/internal/Observable';
 })
 export class AppComponent {
   title = 'rxjs';
-  // example of simple observable
-  observable$!: Observable<any>;
+  // subjects are both observers and observables
+  mySubject$!: Subject<any>;
 
   ngOnInit(){
-    this.observable$ = new Observable((observer) => {
-      observer.next(1);
-      observer.next(2);
-      observer.next(3);
-      observer.complete();
-    });
+    this.mySubject$ = new Subject();
 
-    this.observable$.subscribe(
-      (value: any) => console.log(value),
-      err => {},
-      () => console.log('this is the end =(')
-    );
+    this.mySubject$.subscribe(x => console.log('1st subscriber', x));
+
+    this.mySubject$.next(1);
+    this.mySubject$.next(2);
+
+    this.mySubject$.subscribe(x => console.log('2nd subscriber', x));
+    this.mySubject$.next(3);
+  }
+  ngOnDestry(){
+    this.mySubject$.unsubscribe();
   }
 }
