@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ReplaySubject} from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
+import { interval } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -9,23 +9,13 @@ import { Observable } from 'rxjs/internal/Observable';
 })
 export class AppComponent {
   title = 'rxjs';
-  mySubject$!: ReplaySubject<any>;
 
   ngOnInit(){
-    // BehaviorSubjects requires a starting value
-    this.mySubject$ = new ReplaySubject();
+    // emiting values every second and take first 5 values
+    const numbers$ = interval(1000).pipe(take(5));
+    numbers$.subscribe(x => console.log(x));
 
-    this.mySubject$.subscribe(x => console.log('1st subscriber', x));
-
-    this.mySubject$.next(1);
-    this.mySubject$.next(2);
-
-    // this.mySubject$.unsubscribe();
-
-    this.mySubject$.subscribe(x => console.log('2nd subscriber', x));
-    this.mySubject$.next(3);
   }
   ngOnDestry(){
-    this.mySubject$.unsubscribe();
   }
 }
