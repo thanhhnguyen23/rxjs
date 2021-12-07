@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject} from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
@@ -10,23 +10,18 @@ import { Observable } from 'rxjs/internal/Observable';
 export class AppComponent {
   title = 'rxjs';
   // subjects are both observers and observables
-  mySubject$!: Subject<any>;
+  mySubject$!: BehaviorSubject<any>;
 
   ngOnInit(){
-    this.mySubject$ = new Subject();
+    // BehaviorSubjects requires a starting value
+    this.mySubject$ = new BehaviorSubject(1000);
 
     this.mySubject$.subscribe(x => console.log('1st subscriber', x));
 
     this.mySubject$.next(1);
     this.mySubject$.next(2);
 
-    // observables are not reusable after invoking complete()
-    // this.mySubject$.complete();
-
-    // unsubscribe() will be a better alternative because this method throws an error
-    // as opposed to complete(), where there are no visible error messages
-    this.mySubject$.unsubscribe();
-
+    // this.mySubject$.unsubscribe();
 
     this.mySubject$.subscribe(x => console.log('2nd subscriber', x));
     this.mySubject$.next(3);
