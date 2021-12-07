@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BehaviorSubject} from 'rxjs';
+import { ReplaySubject} from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
@@ -9,12 +9,11 @@ import { Observable } from 'rxjs/internal/Observable';
 })
 export class AppComponent {
   title = 'rxjs';
-  // subjects are both observers and observables
-  mySubject$!: BehaviorSubject<any>;
+  mySubject$!: ReplaySubject<any>;
 
   ngOnInit(){
     // BehaviorSubjects requires a starting value
-    this.mySubject$ = new BehaviorSubject(1000);
+    this.mySubject$ = new ReplaySubject();
 
     this.mySubject$.subscribe(x => console.log('1st subscriber', x));
 
