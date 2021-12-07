@@ -21,7 +21,12 @@ export class AppComponent {
     this.mySubject$.next(2);
 
     // observables are not reusable after invoking complete()
-    this.mySubject$.complete();
+    // this.mySubject$.complete();
+
+    // unsubscribe() will be a better alternative because this method throws an error
+    // as opposed to complete(), where there are no visible error messages
+    this.mySubject$.unsubscribe();
+
 
     this.mySubject$.subscribe(x => console.log('2nd subscriber', x));
     this.mySubject$.next(3);
