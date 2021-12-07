@@ -20,6 +20,9 @@ export class AppComponent {
     this.mySubject$.next(1);
     this.mySubject$.next(2);
 
+    // observables are not reusable after invoking complete()
+    this.mySubject$.complete();
+
     this.mySubject$.subscribe(x => console.log('2nd subscriber', x));
     this.mySubject$.next(3);
   }
