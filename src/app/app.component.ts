@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { interval } from 'rxjs';
-import { filter, map, take } from 'rxjs/operators';
+import { of, interval } from 'rxjs';
+import { map, take, mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -11,16 +11,22 @@ export class AppComponent {
   title = 'rxjs';
 
   ngOnInit(){
-    // emiting values every second and take first 5 values
+    // observerable #1
+    const letters$ = of('a', 'b', 'c', 'd', 'e', 'f');
+    // observerable #2
     const numbers$ = interval(1000).pipe(take(10));
 
-    numbers$
-      // filter useage: only odd numbers
-      .pipe(filter(x => x % 2 != 0))
-      // multiple each value by 10
-      .pipe(map(x => x * 10))
-      .subscribe(x => console.log(x));
+    const results = letters$.pipe(
+      mergeMap(x => numbers$
+        .pipe(
+          map(i => x + i)))
+    );
+
+    // output results
+    results.subscribe(x => console.log(x));
+
   }
+
   ngOnDestry(){
   }
 }
