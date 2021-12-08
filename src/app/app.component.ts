@@ -1,5 +1,6 @@
 import { Component, } from '@angular/core';
-import { fromEvent } from 'rxjs';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -7,12 +8,24 @@ import { fromEvent } from 'rxjs';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  searchSubject$ = new Subject<string>();
+  searchString!: string;
 
   ngOnInit(){
-    // simple observable with a click event
-    fromEvent(document, 'click').subscribe(x => console.log(x))
+
+    this.searchSubject$
+      .pipe(
+        debounceTime(400)
+      ).subscribe( x => console.log(`debounced: ${x}`));
+
   }
 
-  ngOnDestry(){
+  inputChanged($event: any){
+    console.log(`input changed`, $event);
+    this.searchSubject$.next($event);
   }
+
+  ngOnDestroy(){
+  }
+
 }
