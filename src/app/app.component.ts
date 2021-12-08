@@ -1,29 +1,37 @@
-import { Component } from '@angular/core';
-import { of, interval } from 'rxjs';
-import { map, take, mergeMap } from 'rxjs/operators';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { interval, fromEvent } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
+  template:`
+    <button #counterBtn type="button">Click here</button>
+    <h1>Counter: {{ counter }}</h1>
+  `,
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'rxjs';
+  // 'counterBtn' is binded to #counterBtn in html to capture MouseEvent
+  @ViewChild('counterBtn', { static: true, read: ElementRef}) counterBtnRef!: ElementRef;
+
+  counter: number = 0;
 
   ngOnInit(){
-    // observerable #1
-    const letters$ = of('a', 'b', 'c', 'd', 'e', 'f');
-    // observerable #2
-    const numbers$ = interval(1000).pipe(take(10));
-
-    const results = letters$.pipe(
-      mergeMap(x => numbers$
-        .pipe(
-          map(i => x + i)))
-    );
-
-    // output results
-    results.subscribe(x => console.log(x));
+    // listening for button click events inside the DOM
+    fromEvent(this.counterBtnRef.nativeElement, 'click')
+    // switchmap() will reset the current stream and starts a new MouseEvent stream when clicked
+    .pipe(switchMap((_event) => {
+      // outputs the event type, in this case it's MouseEvent
+      console.log(`new event: ${_event}`)
+      // inner observable emitting values
+      return interval(1000)
+    }))
+    .subscribe(data => {
+      // outputs the data stream to console
+      console.log(`data= ${data}`)
+      // saving counter to view layer
+      this.counter = data;
+    });
 
   }
 
